@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 PlatformToolSet=v143:VCToolArchitecture=Native64Bit:VCToolsVersion=14.33.31629:TargetPlatformVersion=10.0.19041.0:
 Debug|x64|D:\学习代码\每日一题\day 2\|
+=======
+PlatformToolSet=v143:VCToolArchitecture=Native64Bit:VCToolsVersion=14.33.31629:TargetPlatformVersion=10.0.19041.0:
+Debug|x64|D:\学习代码\每日一题\day 2\|
+>>>>>>> 69a39be363279d67410a192d15835bcc43c6cde7
