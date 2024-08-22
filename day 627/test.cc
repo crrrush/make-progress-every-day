@@ -1,0 +1,147 @@
+
+
+// LCR 114. 火星词典
+// https://leetcode.cn/problems/Jf1JuT/description/
+// 现有一种使用英语字母的外星文语言，这门语言的字母顺序与英语顺序不同。
+
+// 给定一个字符串列表 words ，作为这门语言的词典，words 中的字符串已经 按这门新语言的字母顺序进行了排序 。
+
+// 请你根据该词典还原出此语言中已知的字母顺序，并 按字母递增顺序 排列。若不存在合法字母顺序，返回 "" 。若存在多种可能的合法字母顺序，返回其中 任意一种 顺序即可。
+
+// 字符串 s 字典顺序小于 字符串 t 有两种情况：
+
+// 在第一个不同字母处，如果 s 中的字母在这门外星语言的字母顺序中位于 t 中字母之前，那么 s 的字典顺序小于 t 。
+// 如果前面 min(s.length, t.length) 字母都相同，那么 s.length < t.length 时，s 的字典顺序也小于 t 。
+ 
+
+// 示例 1：
+
+// 输入：words = ["wrt","wrf","er","ett","rftt"]
+// 输出："wertf"
+// 示例 2：
+
+// 输入：words = ["z","x"]
+// 输出："zx"
+// 示例 3：
+
+// 输入：words = ["z","x","z"]
+// 输出：""
+// 解释：不存在合法字母顺序，因此返回 "" 。
+ 
+
+// 提示：
+
+// 1 <= words.length <= 100
+// 1 <= words[i].length <= 100
+// words[i] 仅由小写英文字母组成
+ 
+
+// 注意：本题与主站 269 题相同： https://leetcode-cn.com/problems/alien-dictionary/
+
+
+class Solution {
+public:
+    string alienOrder(vector<string>& words) {
+        unordered_map<char, pair<int, vector<char>>> map;
+        int wlen = words.size();
+
+        // 初始化，建图
+        for(const auto& e : words) for(const auto& r : e) map[r];
+        for(int i = 0;i < wlen - 1;++i)
+        {
+            int len = min(words[i].size(), words[i + 1].size());
+            int j = 0;
+            for(;j < len;++j)
+            {
+                if(words[i][j] != words[i + 1][j])
+                {
+                    map[words[i][j]].second.push_back(words[i + 1][j]);
+                    ++(map[words[i + 1][j]].first);
+                    break;
+                }
+            }
+            if(j == len && words[i].size() > words[i + 1].size()) return "";
+            
+            // if(same && words[i].size() == words[i + 1].size()) for(const auto& e : words[i]) map[e].first = 0;
+        }
+
+        // 初始点入队列，拓扑排序
+        string ret;
+        queue<char> q;
+        for(const auto& [ch, line] : map) if(0 == line.first) q.push(ch);
+        // for(const auto& [ch, line] : map) cout<< ch<<"["<<line.first<<"] ";
+        // cout<<endl;
+
+        while(!q.empty())
+        {
+            int sz = q.size();
+            while(sz--)
+            {
+                char ch = q.front();
+                q.pop();
+                ret += ch;
+                auto [in_line, out_lines] = map[ch];
+                for(const auto& e : out_lines) if(0 == --(map[e].first)) q.push(e);
+            }
+        }
+        // for(const auto& [ch, line] : map) cout<< ch<<"["<<line.first<<"] ";
+        // cout<<endl;
+
+        for(const auto& [ch, line] : map) if(0 != line.first) return "";
+        return ret;
+    }
+};
+
+// class Solution {
+// public:
+//     string alienOrder(vector<string>& words) {
+//         unordered_map<char, pair<int, vector<char>>> map;
+//         int wlen = words.size();
+
+//         // 初始化，建图
+//         for(const auto& e : words) for(const auto& r : e) map[r];
+//         for(int i = 0;i < wlen - 1;++i)
+//         {
+//             int len = min(words[i].size(), words[i + 1].size());
+//             bool same = true;
+//             for(int j = 0;j < len;++j)
+//             {
+//                 if(words[i][j] != words[i + 1][j])
+//                 {
+//                     map[words[i][j]].second.push_back(words[i + 1][j]);
+//                     ++(map[words[i + 1][j]].first);
+//                     same = false;
+//                     break;
+//                 }
+//             }
+//             if(same && words[i].size() > words[i + 1].size()) return "";
+            
+//             // if(same && words[i].size() == words[i + 1].size()) for(const auto& e : words[i]) map[e].first = 0;
+//         }
+
+//         // 初始点入队列，拓扑排序
+//         string ret;
+//         queue<char> q;
+//         for(const auto& [ch, line] : map) if(0 == line.first) q.push(ch);
+//         // for(const auto& [ch, line] : map) cout<< ch<<"["<<line.first<<"] ";
+//         // cout<<endl;
+
+//         while(!q.empty())
+//         {
+//             int sz = q.size();
+//             while(sz--)
+//             {
+//                 char ch = q.front();
+//                 q.pop();
+//                 ret += ch;
+//                 auto [in_line, out_lines] = map[ch];
+//                 for(const auto& e : out_lines) if(0 == --(map[e].first)) q.push(e);
+//             }
+//         }
+//         // for(const auto& [ch, line] : map) cout<< ch<<"["<<line.first<<"] ";
+//         // cout<<endl;
+
+//         for(const auto& [ch, line] : map) if(0 != line.first) return "";
+//         return ret;
+//     }
+// };
