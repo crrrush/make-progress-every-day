@@ -33,3 +33,27 @@
 // 1 <= nums.length <= 2 * 104
 // 1 <= nums[i] <= 104
 
+class Solution {
+public:
+    int deleteAndEarn(vector<int>& nums) {
+        const int N = 10001;
+        int n = nums.size();
+        int hash[N] = { 0 };
+        for(const auto& e : nums) hash[e] += e;
+
+        int dp1[N] = { 0 };
+        int dp2[N] = { 0 };
+
+        // dp1[0] = dp2[0] = 0;
+
+        for(int i = 1;i < N;++i)
+        {
+            dp1[i] = dp2[i - 1] + hash[i];
+            dp2[i] = max(dp1[i - 1], dp2[i - 1]);
+        }
+
+        return max(dp1[N - 1], dp2[N - 1]);
+    }
+};
+
+
