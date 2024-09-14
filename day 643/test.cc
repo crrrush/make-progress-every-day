@@ -38,3 +38,35 @@
 
 // 1 <= s.length <= 105
 // s 由小写英文字母组成
+
+class Solution {
+    bool is_connect(const char& ch1, const char& ch2)
+    {
+        int a = ch2 - ch1;
+        if(a != 1 && a != -25) return false;
+        return true;
+    }
+public:
+    int findSubstringInWraproundString(string s) {
+        int hash[26] = { 0 };
+        const int n = s.size();
+        s = ' ' + s;
+        vector<int> dp(n + 1, 1);
+
+        int ret = 0;
+        for(int i = 1;i <= n;++i)
+        {
+            if(is_connect(s[i - 1], s[i])) 
+                dp[i] = 1 + dp[i - 1];
+            else
+                dp[i] = 1;
+
+            hash[s[i] - 'a'] = max(dp[i], hash[s[i] - 'a']);
+        }
+
+        for(auto e : hash) ret += e;
+
+        return ret;
+    }
+};
+
